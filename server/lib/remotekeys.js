@@ -211,7 +211,7 @@ var KEYS = [
   { key: 'homehub', title: 'Home Hub', nativeOnly: true },
   // The MR25's AI button reads no value: see NATIVE_SERVICE_KEYS.
   { key: 'ai', title: 'AI', nativeOnly: true, turnsOffVoice: true },
-  { key: 'multikey', title: '? button', nativeOnly: true, noNothing: true },
+  { key: 'multikey', title: '? button', symbol: 'WebOS.Key_webOS_Multikey' },
   { key: 'multikeyhold', title: '? button, held', nativeOnly: true, noNothing: true },
   { key: 'guide', symbol: 'WebOS.Key_webOS_TVGuide', title: 'Guide' },
   { key: 'input', symbol: 'WebOS.Key_webOS_InputSource', title: 'Input' },
@@ -576,7 +576,7 @@ function apply(cb) {
     if (!Object.keys(map).length && !home && !starting && !inChain) return cb(true);
     var src = filterSource();
     var current = null;
-    try { current = fs.readFileSync(filterFile(), 'utf8'); } catch (e) {}
+    try { current = fs.readFileSync(filterFile(), 'utf8'); } catch (e) { }
     var changed = current !== src;
     if (changed) {
       try {
@@ -632,7 +632,7 @@ function readLg() {
   try {
     var j = JSON.parse(fs.readFileSync(lgFile(), 'utf8'));
     Object.keys(out).forEach(function (k) { if (j && j[k] && typeof j[k] === 'object') out[k] = j[k]; });
-  } catch (e) {}
+  } catch (e) { }
   return out;
 }
 
@@ -1007,8 +1007,8 @@ function muteToasts(ms) {
   if (!lunaFn) return;
   if (toastsTimer) clearTimeout(toastsTimer);
   else {
-    try { fs.writeFileSync(toastsMarker(), '', 'utf8'); } catch (e) {}
-    lunaFn('com.webos.notification/disable', {}, function () {});
+    try { fs.writeFileSync(toastsMarker(), '', 'utf8'); } catch (e) { }
+    lunaFn('com.webos.notification/disable', {}, function () { });
   }
   toastsTimer = setTimeout(unmuteToasts, ms);
 }
@@ -1017,7 +1017,7 @@ function unmuteToasts() {
   toastsTimer = null;
   lunaFn('com.webos.notification/enable', {}, function (r) {
     if (r && r.returnValue) {
-      try { fs.unlinkSync(toastsMarker()); } catch (e) {}
+      try { fs.unlinkSync(toastsMarker()); } catch (e) { }
     } else {
       console.log('remotekeys: toasts could not be switched back on; trying again');
       toastsTimer = setTimeout(unmuteToasts, 5000);
@@ -1076,7 +1076,7 @@ function logChanged(cur) {
     if (err) { reading = false; return; }
     var buf = allocBuffer(length);
     fs.read(fd, buf, 0, length, start, function (err2, bytes) {
-      fs.close(fd, function () {});
+      fs.close(fd, function () { });
       reading = false;
       if (err2 || !bytes) return;
       logOffset = start + bytes;
@@ -1375,7 +1375,7 @@ function setHome(id, cb) {
  * compositor's filters for nothing. cb(ok).
  */
 function ensure(cb) {
-  cb = cb || function () {};
+  cb = cb || function () { };
   if (!lunaFn) return cb(false);
   moveLegacyHome();
   if (keysOnTv()) return apply(cb);
@@ -1430,7 +1430,7 @@ function powerChanged() {
  */
 var RECHECK_MS = 30 * 60 * 1000;
 function recheckNative(cb) {
-  cb = cb || function () {};
+  cb = cb || function () { };
   if (!lunaFn || keysOnTv()) return cb(false);
   hasNativeFilters(function (yes) {
     if (!yes) return cb(false);
@@ -1477,7 +1477,7 @@ function restoreFilter(cb) {
       if (!list) return cb(false);
       var rest = withoutOurs(list);
       var finish = function (ok) {
-        if (ok) { try { fs.unlinkSync(filterFile()); } catch (e) {} }
+        if (ok) { try { fs.unlinkSync(filterFile()); } catch (e) { } }
         cb(ok && okKeys);
       };
       if (rest.length === list.length) return finish(true);

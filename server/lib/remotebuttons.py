@@ -27,7 +27,8 @@ BUTTON_CODES = {
     # The microphone, Movies and Google Assistant (remotebuttons.js).
     428: 'voice',
     1083: 'movies',
-    1117: 'googleassistant'
+    1117: 'googleassistant',
+    1124: 'multikey'
 }
 
 # The Home button, reported going down and up: Glasshouse Home opens LG's

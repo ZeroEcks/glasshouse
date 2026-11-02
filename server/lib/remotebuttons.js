@@ -36,6 +36,7 @@ var BUTTON_CODES = {
   428: 'voice',
   1083: 'movies',
   1117: 'googleassistant',
+  1124: 'multikey',
   18874385: 'red',
   18874386: 'green',
   18874387: 'yellow',
@@ -91,7 +92,7 @@ function findRcuDevices() {
         }
       }
     }
-  } catch (e) {}
+  } catch (e) { }
 
   if (!found.length) {
     if (fs.existsSync('/dev/input/event1')) found.push('/dev/input/event1');
@@ -107,7 +108,7 @@ function handleParsedEvent(type, code, val) {
   }
   if (type === EV_KEY && code === HOME_CODE && (val === 0 || val === 1)) {
     if (process.argv.indexOf('--worker') !== -1) {
-      try { process.stdout.write('home ' + val + '\n'); } catch (e) {}
+      try { process.stdout.write('home ' + val + '\n'); } catch (e) { }
     } else if (onHomeKeyFn) {
       onHomeKeyFn(val === 1);
     }
@@ -117,7 +118,7 @@ function handleParsedEvent(type, code, val) {
   var color = BUTTON_CODES[code];
   if (!color) {
     if (process.argv.indexOf('--worker') !== -1) {
-      try { process.stdout.write('key ' + code + '\n'); } catch (e) {}
+      try { process.stdout.write('key ' + code + '\n'); } catch (e) { }
     }
     return;
   }
@@ -131,7 +132,7 @@ function handleParsedEvent(type, code, val) {
   if (process.argv.indexOf('--worker') !== -1) {
     try {
       process.stdout.write(color + ' ' + code + '\n');
-    } catch (e) {}
+    } catch (e) { }
   } else if (onButtonFn) {
     onButtonFn(color, code);
   }
@@ -175,7 +176,7 @@ function createDeviceStream(devPath) {
     }
   });
 
-  stream.on('error', function (err) {});
+  stream.on('error', function (err) { });
   return stream;
 }
 
@@ -203,11 +204,11 @@ function runWorker() {
       try {
         if (streams[j].destroy) streams[j].destroy();
         else if (streams[j].close) streams[j].close();
-      } catch (e) {}
+      } catch (e) { }
     }
     process.exit(0);
   });
-  setInterval(function () {}, 60000);
+  setInterval(function () { }, 60000);
 }
 
 function stop() {
@@ -215,7 +216,7 @@ function stop() {
   if (workerProc) {
     try {
       workerProc.kill('SIGTERM');
-    } catch (e) {}
+    } catch (e) { }
     workerProc = null;
   }
   activeDevices = [];
@@ -266,7 +267,7 @@ function start() {
   var remainder = '';
 
   if (child.stdout) {
-    child.stdout.on('error', function () {});
+    child.stdout.on('error', function () { });
     child.stdout.on('data', function (chunk) {
       if (!chunk) return;
       var str = remainder + chunk.toString('utf8');
